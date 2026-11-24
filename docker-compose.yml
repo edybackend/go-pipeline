@@ -1,0 +1,24 @@
+name: go-pipeline
+
+# `docker compose up` generates 100,000 transactions, then ingests them and prints the report.
+# Try other settings with: docker compose run --rm pipeline run -workers 1
+services:
+  generate:
+    build:
+      context: .
+    image: go-pipeline:local
+    command: ["generate", "-n", "100000", "-o", "data/transactions.jsonl"]
+    volumes:
+      - pipeline-data:/app/data
+
+  pipeline:
+    image: go-pipeline:local
+    command: ["run", "-i", "data/transactions.jsonl", "-workers", "32"]
+    volumes:
+      - pipeline-data:/app/data
+    depends_on:
+      generate:
+        condition: service_completed_successfully
+
+volumes:
+  pipeline-data:
