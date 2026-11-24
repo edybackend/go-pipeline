@@ -54,8 +54,8 @@ func main() {
 }
 
 func usage(w io.Writer) {
-	fmt.Fprintln(w, "usage: pipeline generate [-n 100000] [-o data/transactions.jsonl] [-seed 42]")
-	fmt.Fprintln(w, "       pipeline run [-i data/transactions.jsonl] [-db data/pipeline.db] [-rejects data/rejects.jsonl] [-workers N] ...")
+	_, _ = fmt.Fprintln(w, "usage: pipeline generate [-n 100000] [-o data/transactions.jsonl] [-seed 42]")
+	_, _ = fmt.Fprintln(w, "       pipeline run [-i data/transactions.jsonl] [-db data/pipeline.db] [-rejects data/rejects.jsonl] [-workers N] ...")
 }
 
 func runGenerate(args []string) error {
