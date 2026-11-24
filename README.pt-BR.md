@@ -12,8 +12,6 @@ limitados**, ligados por canais:
 Um estágio lento freia os outros, em vez de encher a memória. Um erro fatal cancela todos os estágios via `errgroup`.
 O Ctrl+C grava o lote em andamento, e **rodar o mesmo arquivo de novo termina o trabalho sem duplicatas**.
 
-Pequeno de propósito: dá para ler em uns 15 minutos e subir com um comando.
-
 ## Como rodar
 
 Requisito: Docker.
@@ -137,16 +135,9 @@ specs/               especificações (spec primeiro)
 - **Cache em memória** por execução; um serviço de longa duração limitaria o tamanho (LRU) e expiraria entradas.
 - **As rejeitadas são sobrescritas** a cada execução; um job de produção guardaria um arquivo por execução.
 
-## Engenharia assistida por IA
+## Trabalhando com um agente de IA
 
-Este projeto foi construído com o Claude Code sob controles explícitos de engenharia:
-
-- **Regras do projeto** ([`CLAUDE.md`](CLAUDE.md)) definem a estrutura e as regras de concorrência que o agente segue.
-- **Hooks** ([`.claude/settings.json`](.claude/settings.json)) rodam `gofmt` em cada mudança, bloqueiam edição de segredos, dados e `go.sum`, **bloqueiam `context.Background()`, `time.Sleep` e buffers gigantes em `internal/`**, e rodam vet e testes com race antes de a tarefa ser dada como pronta.
-- **Spec primeiro**: cada funcionalidade começa como especificação em [`specs/`](specs), com critérios de aceite.
-- **Os mesmos portões de qualidade para cada linha**: o CI roda gofmt, vet, testes com race (×3), golangci-lint, SIGINT + nova execução do binário real, Docker Compose e varredura de segredos.
-
-A arquitetura é minha, e eu reviso cada mudança.
+Bugs de concorrência se escondem bem na revisão, então os hábitos que os evitam são conferidos de forma mecânica. Hooks em [`.claude/`](.claude) recusam `context.Background()`, `time.Sleep` e buffers de canal gigantes em `internal/`, e rodam vet e os testes com race antes de a mudança valer. O [`CLAUDE.md`](CLAUDE.md) tem o resto das regras.
 
 ## Licença
 

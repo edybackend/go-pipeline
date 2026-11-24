@@ -12,8 +12,6 @@ connected by channels:
 A slow stage slows the others instead of filling memory. A fatal error cancels every stage through `errgroup`.
 Ctrl+C commits the batch in hand, and **rerunning the same file finishes the job without duplicates**.
 
-Small on purpose: it can be read in about 15 minutes and started with one command.
-
 ## Quick start
 
 Requirements: Docker.
@@ -137,16 +135,9 @@ specs/               feature specs (spec-first workflow)
 - **An in-memory cache** for one run; a long-running service would bound it (LRU) and expire entries.
 - **Rejects are overwritten** on each run; a production job would version them per run.
 
-## AI-Assisted Engineering
+## Working with an AI agent
 
-This project was built with Claude Code under explicit engineering controls:
-
-- **Project rules** ([`CLAUDE.md`](CLAUDE.md)) define the layout and the concurrency rules the agent must follow.
-- **Hooks** ([`.claude/settings.json`](.claude/settings.json)) run `gofmt` on every change, block edits to secrets, data and `go.sum`, **block `context.Background()`, `time.Sleep` and huge channel buffers in `internal/`**, and run vet and race tests before a task is considered done.
-- **Spec-first**: each feature starts as a spec in [`specs/`](specs) with acceptance criteria.
-- **Same quality gates for every line**: CI runs gofmt, vet, race tests (×3), golangci-lint, a SIGINT-and-rerun of the real binary, Docker Compose and secret scanning.
-
-I own the architecture and review every change.
+Concurrency bugs hide well in review, so the habits that prevent them are checked mechanically. Hooks in [`.claude/`](.claude) refuse `context.Background()`, `time.Sleep` and oversized channel buffers inside `internal/`, and run vet and the race tests before a change counts as done. [`CLAUDE.md`](CLAUDE.md) has the rest of the rules.
 
 ## License
 
